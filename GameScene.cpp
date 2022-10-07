@@ -30,6 +30,14 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/background.png");
 
+	// テクスチャ2番に読み込み
+	Sprite::LoadTexture(2, L"Resources/texture.png");
+
+	//座標{0,0}に
+	sprite1 = Sprite::Create(2, { 0,0 });
+	//
+	sprite2 = Sprite::Create(2, { 500,500 }, { 1,0,0,1 }, { 0,0 }, false, true);
+
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 	// 3Dオブジェクト生成
@@ -65,6 +73,16 @@ void GameScene::Update()
 	}
 
 	object3d->Update();
+
+	//スペースキーを押していたら
+	if (input->PushKey(DIK_SPACE)) {
+		//現在の座標を取得
+		XMFLOAT2 position = sprite1->GetPosition();
+		//移動後の座標を計算
+		position.x += 1.0f;
+		//座標の変更を反映
+		sprite1->SetPosition(position);
+	}
 }
 
 void GameScene::Draw()
@@ -93,7 +111,7 @@ void GameScene::Draw()
 	Object3d::PreDraw(cmdList);
 
 	// 3Dオブクジェクトの描画
-	//object3d->Draw();
+	object3d->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
@@ -106,6 +124,9 @@ void GameScene::Draw()
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
+
+	sprite1->Draw();
+	sprite2->Draw();
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
