@@ -33,9 +33,9 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	// テクスチャ2番に読み込み
 	Sprite::LoadTexture(2, L"Resources/texture.png");
 
-	//座標{0,0}に
+	//座標{0,0}に、テクスチャ2番のスプライトを生成
 	sprite1 = Sprite::Create(2, { 0,0 });
-	//
+	//座標{500,500}に、テクスチャ2番のスプライトを生成
 	sprite2 = Sprite::Create(2, { 500,500 }, { 1,0,0,1 }, { 0,0 }, false, true);
 
 	// 背景スプライト生成
@@ -125,8 +125,8 @@ void GameScene::Draw()
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(cmdList);
 
-	sprite1->Draw();
-	sprite2->Draw();
+	//sprite1->Draw();
+	//sprite2->Draw();
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
