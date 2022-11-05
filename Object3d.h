@@ -166,6 +166,17 @@ private: // 静的メンバ変数
 	// 頂点データ配列
 	//static VertexPosNormalUv vertices[vertexCount];
 	static std::vector<VertexPosNormalUv> vertices;
+
+	/*
+		vector 配列の強化版	動的メモリ確保 実行中にメモリ変わる
+		配列					静的メモリ確保 実行する前にメモリ決まってる
+		配列は宣言時に要素数きめる、そのあと要素数増やしたり減らしたりできない
+		vectorはあとから要素数を増やせる(メモリを削除する仕様で作ってない
+
+		配列からvectorに変えた理由 : 配列だと読み込める頂点数に限りがあるのと確保したメモリが無駄になるから
+
+	*/
+
 	// 頂点インデックス配列
 	//static unsigned short indices[planeCount * 3];
 	static std::vector<unsigned short> indices;

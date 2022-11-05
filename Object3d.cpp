@@ -41,13 +41,13 @@ std::vector<Object3d::VertexPosNormalUv> Object3d::vertices;
 std::vector<unsigned short> Object3d::indices;
 Object3d::Material Object3d::material;
 
-void Object3d::StaticInitialize(ID3D12Device * device, int window_width, int window_height)
+void Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
 {
 	// nullptrチェック
 	assert(device);
 
 	Object3d::device = device;
-		
+
 	// デスクリプタヒープの初期化
 	InitializeDescriptorHeap();
 
@@ -66,7 +66,7 @@ void Object3d::StaticInitialize(ID3D12Device * device, int window_width, int win
 
 }
 
-void Object3d::PreDraw(ID3D12GraphicsCommandList * cmdList)
+void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
 	assert(Object3d::cmdList == nullptr);
@@ -88,9 +88,9 @@ void Object3d::PostDraw()
 	Object3d::cmdList = nullptr;
 }
 
-Object3d * Object3d::Create()
+Object3d* Object3d::Create()
 {
-	
+
 	// 3Dオブジェクトのインスタンスを生成
 	Object3d* object3d = new Object3d();
 	if (object3d == nullptr) {
@@ -145,7 +145,7 @@ void Object3d::CameraMoveVector(XMFLOAT3 move)
 void Object3d::InitializeDescriptorHeap()
 {
 	HRESULT result = S_FALSE;
-	
+
 	// デスクリプタヒープを生成	
 	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
 	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
@@ -351,46 +351,45 @@ void Object3d::LoadMaterial(const std::string& directoryPath, const std::string&
 		std::istringstream line_stream(line);
 		//半角スペース区切りで行の先頭文字列を取得
 		string key;
-		getline(line_stream, key, '	');
+		getline(line_stream, key, ' ');
 
 		//先頭のタブ文字は無視する
 		if (key[0] == '\t') {
 			key.erase(key.begin());//先頭の文字を削除
-
-			//先頭文字がnewmtlならマテリアル名
-			if (key == "newmtl") {
-				//マテリアル名読み込み
-				line_stream >> material.name;
-			}
-			//先頭文字がKaならアンビエント色
-			if (key == "Ka") {
-				line_stream >> material.ambient.x;
-				line_stream >> material.ambient.y;
-				line_stream >> material.ambient.z;
-			}
-			//先頭文字がKdならディフューズ色
-			if (key == "Kd") {
-				line_stream >> material.diffuse.x;
-				line_stream >> material.diffuse.y;
-				line_stream >> material.diffuse.z;
-			}
-			//先頭文字がKsならスペキュラー色
-			if (key == "Ks") {
-				line_stream >> material.specular.x;
-				line_stream >> material.specular.y;
-				line_stream >> material.specular.z;
-			}
-			//先頭文字がmap_Kdならテクスチャファイル名
-			if (key == "map_Kd") {
-				//テクスチャファイル名読み込み
-				line_stream >> material.textureFilename;
-				//テクスチャ読み込み
-				LoadTexture(directoryPath, material.textureFilename);
-			}
 		}
-		//ファイルを閉じる
-		file.close();
+		//先頭文字がnewmtlならマテリアル名
+		if (key == "newmtl") {
+			//マテリアル名読み込み
+			line_stream >> material.name;
+		}
+		//先頭文字がKaならアンビエント色
+		if (key == "Ka") {
+			line_stream >> material.ambient.x;
+			line_stream >> material.ambient.y;
+			line_stream >> material.ambient.z;
+		}
+		//先頭文字がKdならディフューズ色
+		if (key == "Kd") {
+			line_stream >> material.diffuse.x;
+			line_stream >> material.diffuse.y;
+			line_stream >> material.diffuse.z;
+		}
+		//先頭文字がKsならスペキュラー色
+		if (key == "Ks") {
+			line_stream >> material.specular.x;
+			line_stream >> material.specular.y;
+			line_stream >> material.specular.z;
+		}
+		//先頭文字がmap_Kdならテクスチャファイル名
+		if (key == "map_Kd") {
+			//テクスチャファイル名読み込み
+			line_stream >> material.textureFilename;
+			//テクスチャ読み込み
+			LoadTexture(directoryPath, material.textureFilename);
+		}
 	}
+	//ファイルを閉じる
+	file.close();
 }
 
 bool Object3d::LoadTexture(const std::string& directoryPath, const std::string& filename)
@@ -510,9 +509,10 @@ void Object3d::CreateModel()
 			//マテリアル読み込み
 			LoadMaterial(directoryPath, filename);
 		}
-		
+
 		//先頭文字がvなら頂点座標
 		if (key == "v") {
+			// v X Y Z 
 			//X,Y,Z座標読み込み
 			XMFLOAT3 position{};
 			line_stream >> position.x;
@@ -553,7 +553,7 @@ void Object3d::CreateModel()
 			while (getline(line_stream, index_string, ' ')) {
 				//頂点インデックス1個分の文字列をストリームに変換して解析しやすくする
 				std::istringstream index_stream(index_string);
-				unsigned short indexPosition,indexNormal,indexTexcoord;
+				unsigned short indexPosition, indexNormal, indexTexcoord;
 				index_stream >> indexPosition;
 				index_stream.seekg(1, ios_base::cur);//スラッシュを飛ばす
 				index_stream >> indexTexcoord;
@@ -728,7 +728,7 @@ void Object3d::CreateModel()
 	//UINT sizeIB = static_cast<UINT>(sizeof(indices));
 	// リソース設定
 	resourceDesc.Width = sizeIB;
-	
+
 	resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(sizeIB);
 	// インデックスバッファ生成
 	result = device->CreateCommittedResource(
@@ -771,25 +771,27 @@ bool Object3d::Initialize()
 	// ヒーププロパティ
 	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 	// リソース設定
-	CD3DX12_RESOURCE_DESC resourceDesc =
-		CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff) & ~0xff);
-
+	CD3DX12_RESOURCE_DESC resourceDesc[2] =
+	{
+		CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff) & ~0xff),
+		CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB1) + 0xff) & ~0xff)
+	};
 	HRESULT result;
 
 	// 定数バッファの生成
 	result = device->CreateCommittedResource(
 		&heapProps, // アップロード可能
-		D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+		D3D12_HEAP_FLAG_NONE, &resourceDesc[0], D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 		IID_PPV_ARGS(&constBuffB0));
 	assert(SUCCEEDED(result));
 
-	
+
 
 	// 定数バッファの生成
 	result = device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		&heapProps,
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB1) + 0xff) & ~0xff),
+		&resourceDesc[1],
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&constBuffB1));
@@ -845,7 +847,7 @@ void Object3d::Draw()
 	// nullptrチェック
 	assert(device);
 	assert(Object3d::cmdList);
-		
+
 	// 頂点バッファの設定
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	// インデックスバッファの設定
@@ -856,13 +858,12 @@ void Object3d::Draw()
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	// 定数バッファビューをセット
-	//cmdList->SetGraphicsRootConstantBufferView(0, constBuff->GetGPUVirtualAddress());
 	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
 	cmdList->SetGraphicsRootConstantBufferView(1, constBuffB1->GetGPUVirtualAddress());
 	// シェーダリソースビューをセット
-	//cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
 	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandleSRV);
 	// 描画コマンド
 	//cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+
 }
