@@ -11,6 +11,7 @@ GameScene::~GameScene()
 {
 	delete spriteBG;
 	delete object3d;
+	delete boxObject;
 }
 
 void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
@@ -43,6 +44,9 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input)
 	// 3Dオブジェクト生成
 	object3d = Object3d::Create();
 	object3d->Update();
+
+	boxObject = Object3d::Create();
+	boxObject->Update();
 }
 
 void GameScene::Update()
@@ -112,6 +116,8 @@ void GameScene::Draw()
 
 	// 3Dオブクジェクトの描画
 	object3d->Draw();
+
+	boxObject->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
